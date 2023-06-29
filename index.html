@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + Vue</title>
+    <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div>
+        <button onclick="handleHashChange('#/home')">home</button>
+        <button onclick="handleHashChange('#/report/app_click.html')">app_click</button>
+    </div>
+    <div id="app"></div>
+    <div id="mpa"></div>
+    <script type="module" src="/src/main.ts"></script>
+    <script>
+      const hitRouter = [
+        '#/home'
+      ]
+      window.addEventListener('hashchange', handleHashChange);
+      function handleHashChange(go='') {
+        // 获取当前的 hash
+        const newHash = go || window.location.hash;
+        
+        // 处理 hash 改变的逻辑
+        console.log('Hash changed:', newHash);
+        if (newHash.includes('html')) {
+          $('#app').hide()
+          $('#mpa').show()
+          location.hash = newHash
+          fetch(newHash.substring(1)).then(response => {
+            if (response.status === 200) {
+              return response.text();
+            } else {
+              throw new Error(response);
+            }
+          }).then(htmlStr => {
+            const c = $(htmlStr);
+            document.title = 'test';
+            $('#mpa').empty().append(c);
+          });
+        } else {
+          $('#app').show()
+          $('#mpa').hide()
+          window.vueRouter.push(newHash.substring(1));
+        }
+      }
+      $(function() {
+        handleHashChange()
+      })
+
+    </script>
+  </body>
+</html>

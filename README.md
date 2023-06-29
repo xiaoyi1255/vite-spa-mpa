@@ -1,1 +1,1 @@
-# vite-spa-mpa
+多页面项目 => 集成 vite
